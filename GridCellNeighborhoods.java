@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -521,6 +523,21 @@ public class GridCellNeighborhoods
             "1 positive, 2x2 grid, N > H and W, should be 0, cannot get to any destination",
             new Position(0, 1, 5));
         examples.add(exampleToAdd);
+
+        exampleToAdd = new GridCellNeighborhoods(100, 2, 2,
+            "1 positive, 2x2 grid, N much > H and W, should be 0, cannot get to any destination",
+            new Position(0, 1, 5));
+        examples.add(exampleToAdd);
+
+        exampleToAdd = new GridCellNeighborhoods(12, 11, 11,
+            "1 positive at (0,0), 11x11 grid, N > H and W, should be < 85",
+            new Position(0, 0, 5));
+        examples.add(exampleToAdd);
+
+        exampleToAdd = new GridCellNeighborhoods(12, 11, 11,
+            "1 positive at (5,5), 11x11 grid, N > H and W, should be < 121",
+            new Position(0, 0, 5));
+        examples.add(exampleToAdd);
         
         /* In the example below, we always include the home base (positive cell), even if we can't get to any desintations.  This is a possible reading of task point 2,
          *  so we test it here.
@@ -547,6 +564,7 @@ public class GridCellNeighborhoods
             System.out.println("Caught expected IllegalArgumentException for bad positive position (" + newPosition + "): " + iae);
         }
 
+        Instant start = Instant.now();
         for( GridCellNeighborhoods example : examples ) {
             // example.setDebug( true);
             // example.setListUniqueCells(true);
@@ -554,5 +572,7 @@ public class GridCellNeighborhoods
             System.out.println("Total unique neighborhood cells ( " + example.toString() + "), " +
                 "example " + (examples.indexOf(example) + 1 ) + ": " + count);
         }
+        Instant stop  = Instant.now();
+        System.out.println( "Total time: " + Duration.between(start, stop));
     }
 }
