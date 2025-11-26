@@ -10,7 +10,7 @@ import java.util.TreeSet;
  * Hello world!
  *
  */
-public class GridCellNeighborhoodsWithinDistince 
+public class GridCellNeighborhoodsWithinDistance 
 {
     private record Position(int y, int x, int value) {}
 
@@ -20,12 +20,12 @@ public class GridCellNeighborhoodsWithinDistince
     private final int width;
     private boolean debug = false;
     private boolean listUniqueCells = false;
-    private final List<List<GridCellNeighborhoodsWithinDistince.Position>> rows;
+    private final List<List<GridCellNeighborhoodsWithinDistance.Position>> rows;
     private final int numPositiveValues;
     private final String label;
     private boolean alwaysAddHomeBase = false;
 
-    public GridCellNeighborhoodsWithinDistince( int distanceThreshold, int height, int width, String label, Position... positivePositions ) {
+    public GridCellNeighborhoodsWithinDistance( int distanceThreshold, int height, int width, String label, Position... positivePositions ) {
         this.distanceThreshold = distanceThreshold;
         this.height = height;
         this.width = width;
@@ -198,20 +198,20 @@ public class GridCellNeighborhoodsWithinDistince
 
     public static void main( String[] args )
     {
-        List<GridCellNeighborhoodsWithinDistince> examples = new ArrayList<>();
+        List<GridCellNeighborhoodsWithinDistance> examples = new ArrayList<>();
 
         // Fill one positive value for example 1
-        GridCellNeighborhoodsWithinDistince exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 11, 11,
+        GridCellNeighborhoodsWithinDistance exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 11, 11,
             "1 positive, center", new Position(5, 5, 5));
         examples.add(exampleToAdd);
 
         // Fill one positive value for example 2 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 11, 11,
             "1 positive, to left", new Position(5, 1, 5));
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 3 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, no overlap",
             new Position(7, 7, 5),
             new Position(3, 3, 5));
@@ -219,7 +219,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 4 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap",
             new Position(3, 3, 5),
             new Position(4, 5, 5));
@@ -228,7 +228,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 5, overlap and run out of bounds, shifted example4 to left by 3 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, out of bounds left",
             new Position(3, 0, 5),
             new Position(4, 2, 5));
@@ -237,7 +237,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 6, overlap and run out of bounds, shifted example to down by 3 and left by 3
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, out of bounds bottom left",
             new Position(0, 0, 5),
             new Position(1, 2, 5));
@@ -246,21 +246,21 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 7, overlap and run out of bounds, shifted example4 to down by 3 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, out of bounds bottom",
             new Position(0, 3, 5),
             new Position(1, 5, 5));
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 8, overlap and run out of bounds, shifted example4 to right by 5
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, out of bounds right",
             new Position(3, 8, 5),
             new Position(4, 10, 5));
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 9, overlap and run out of bounds, shifted example4 to up by 6
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, out of bounds top",
             new Position(9, 3, 5),
             new Position(10, 5, 5));
@@ -269,7 +269,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 10, diagonally adjacent positive values
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, diagonal adjacent",
             new Position(3, 3, 5),
             new Position(4, 4, 5));
@@ -278,7 +278,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 11, directly adjacent positive values, same row
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, same row adjacent",
             new Position(3, 3, 5),
             new Position(3, 4, 5));
@@ -287,7 +287,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 12, directly adjacent positive values, same column
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 11, 11,
             "2 positives, overlap, same column adjacent",
             new Position(3, 4, 5),
             new Position(4, 4, 5));
@@ -296,7 +296,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 13, opposite corners
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 11, 11,
             "opposite corners",
             new Position(0, 0, 5),
             new Position(10, 10, 5));
@@ -305,7 +305,7 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Fill two positive values for example 14, 3 in one corder
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 11, 11,
             "3 in one corner",
             new Position(10, 9, 5),
             new Position(9, 10, 5),
@@ -315,35 +315,35 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // oddly shaped examples
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 1, 21,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 1, 21,
             "1 positive, 1x21 grid",
             new Position(0, 9, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 21, 1,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 21, 1,
             "1 positive, 21x1 grid",
             new Position(10, 0, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(0, 1, 1,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(0, 1, 1,
             "1 positive, 1x1 grid, should be 1",
             new Position(0, 0, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(0, 20, 20,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(0, 20, 20,
             "1 positive, 20x20 grid, should be 1",
             new Position(0, 0, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 2, 2,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 2, 2,
             "1 positive, 2x2 grid, should be 4",
             new Position(0, 1, 5));
         // exampleToAdd.setDebug( true);
@@ -351,42 +351,42 @@ public class GridCellNeighborhoodsWithinDistince
         examples.add(exampleToAdd);
 
         // Another example for where N > W or H (not both, that is already above).  If this is done correctly, nothing should happen to it's runtime, I would think.
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(5, 21, 3,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(5, 21, 3,
             "1 positive, 21x3 grid, N > W",
             new Position(10, 2, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(5, 4, 15,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(5, 4, 15,
             "1 positive, 4x15 grid, N > H",
             new Position(2, 9, 5));
         // exampleToAdd.setDebug( true);
         // exampleToAdd.setListUniqueCells(true);
         examples.add(exampleToAdd);
         
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 2, 2,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 2, 2,
             "1 positive, 2x2 grid, N > H and W, should be 4",
             new Position(0, 1, 5));
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(100, 2, 2,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(100, 2, 2,
             "1 positive, 2x2 grid, N much > H and W, should be 4",
             new Position(0, 1, 5));
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(12, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(12, 11, 11,
             "1 positive at (0,0), 11x11 grid, N > H and W, should be 85",
             new Position(0, 0, 5));
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(12, 11, 11,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(12, 11, 11,
             "1 positive at (5,5), 11x11 grid, N > H and W, should be 121, entire grid",
             new Position(5, 5, 5));
         examples.add(exampleToAdd);
 
         // All negative, should be 0
-        exampleToAdd = new GridCellNeighborhoodsWithinDistince(3, 10, 10,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 10, 10,
             "No positive, should be 0");
         examples.add(exampleToAdd);
 
@@ -394,7 +394,7 @@ public class GridCellNeighborhoodsWithinDistince
         Position newPosition = new Position(0, 2, 5);
         try {
             // We expect an Eception here because positive position is out of bounds
-            exampleToAdd = new GridCellNeighborhoodsWithinDistince(2, 2, 2,
+            exampleToAdd = new GridCellNeighborhoodsWithinDistance(2, 2, 2,
                 "1 positive, 2x2 grid", newPosition );
             examples.add(exampleToAdd);
         } catch( IllegalArgumentException iae ) {
@@ -402,7 +402,7 @@ public class GridCellNeighborhoodsWithinDistince
         }
         
         Instant start = Instant.now();
-        for( GridCellNeighborhoodsWithinDistince example : examples ) {
+        for( GridCellNeighborhoodsWithinDistance example : examples ) {
             // example.setDebug( true);
             // example.setListUniqueCells(true);
             int count = example.countGridCellsWithinNeighborhood();
