@@ -135,6 +135,16 @@ public class GridCellNeighborhoodsWithinDistance
                      * We will hit the manhattan distance before the threshold in some cases, but the absolute outer limit is the
                      *  distance threshold, which will be a square.
                      */
+                    // int minYOffset = -(distanceThreshold - 1);
+                    // if( minYOffset < 0 )
+                    //     minYOffset = 0;
+                    /* Even better way: think of it as a diamond shape inside a square.  The square is defined by the distance threshold.
+                     * This means that for the lowest row, we actually only care about the cell in the same column as the positive cell.  Next row up,
+                     * we care about one cell to the left and one to the right, etc., until we reach the row of the positive cell.  Then as we go above
+                     * the positive cell, we reverse the process.
+                     * 
+                     * 100,0000 took 36 seconds, so we would need to do some sort of optimization for larger grids.
+                     */
                     for( int yOffset = -distanceThreshold; yOffset <= distanceThreshold; yOffset++ )
                     {
                         // go through each row
