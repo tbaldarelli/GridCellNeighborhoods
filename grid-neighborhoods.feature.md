@@ -214,27 +214,279 @@ of at least one positive-valued cell.
 
 ---
 
-## Scenario 5: Distance threshold of zero
+## Scenario 11: Multiple positive cells with overlapping neighborhoods, same row adjacent
 
-**Given** a grid with one or more positive cells  
-**And** the distance threshold `N` is zero  
+**Given** a grid with more than one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(3,3)`
+**And** one positive cell at position `(3,4)`
+**And** a distance threshold `2`  
+**And** H = `11`
+**And** W = `11`
 
 **When** the neighborhood count is calculated  
 
-**Then** only the cells containing positive values are counted  
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `18` cells in the combined neighborhood
 
 ---
 
-## Scenario 6: Distance threshold larger than grid dimensions
+## Scenario 12: Multiple positive cells with overlapping neighborhoods, same column adjacent
 
-**Given** a grid with at least one positive cell  
-**And** the distance threshold `N` is greater than one or more grid dimensions  
+**Given** a grid with more than one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(3,4)`
+**And** one positive cell at position `(4,4)`
+**And** a distance threshold `2`  
+**And** H = `11`
+**And** W = `11`
 
 **When** the neighborhood count is calculated  
 
-**Then** only valid grid cells are considered  
-**And** the calculation follows Manhattan distance rules  
-**And** no assumptions are made about full grid coverage  
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `18` cells in the combined neighborhood
+
+---
+
+## Scenario 13: Multiple positive cells, opposite corners
+
+**Given** a grid with more than one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,0)`
+**And** one positive cell at position `(10,10)`
+**And** a distance threshold `3`  
+**And** H = `11`
+**And** W = `11`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `20` cells in the combined neighborhood
+
+---
+
+## Scenario 14: Multiple positive cells, 3 in one corner
+
+**Given** a grid with more than one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(10,9)`
+**And** one positive cell at position `(9,10)`
+**And** one positive cell at position `(10,10)`
+**And** a distance threshold `3`  
+**And** H = `11`
+**And** W = `11`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `15` cells in the combined neighborhood
+
+---
+
+## Scenario 15: One positive cell, 1x21 grid
+
+**Given** a grid with one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,9)`
+**And** a distance threshold `3`  
+**And** H = `1`
+**And** W = `21`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `7` cells in the combined neighborhood
+
+---
+
+## Scenario 16: One positive cell, 21x1 grid
+
+**Given** a grid with one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(10,0)`
+**And** a distance threshold `3`
+**And** H = `21`
+**And** W = `1`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `7` cells in the combined neighborhood
+
+---
+
+## Scenario 17: one positive cell, 1x1 grid
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,0)`
+**And** a distance threshold `0`  
+**And** H = `1`
+**And** W = `1`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `1` cells in the combined neighborhood
+
+---
+
+## Scenario 18: One positive cell, 20x20 grid
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,0)`
+**And** a distance threshold `0`  
+**And** H = `20`
+**And** W = `20`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `1` cells in the combined neighborhood
+
+---
+
+## Scenario 19: one positive cell, 2x2 grid
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,1)`
+**And** a distance threshold `2`  
+**And** H = `2`
+**And** W = `2`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `4` cells in the combined neighborhood
+
+---
+
+## Scenario 20: One positive cell, 21x3 grid, N > W
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(10,2)`
+**And** a distance threshold `5`
+**And** H = `21`
+**And** W = `3`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `27` cells in the combined neighborhood
+
+---
+
+## Scenario 21: One positive cell, 4x15 grid, N > H
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(2,9)`
+**And** a distance threshold `5`  
+**And** H = `4`
+**And** W = `15`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `36` cells in the combined neighborhood
+
+---
+
+## Scenario 22: One positive cell, 2x2 grid, N > H and W
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,1)`
+**And** a distance threshold `3`  
+**And** H = `2`
+**And** W = `2`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `4` cells in the combined neighborhood
+
+---
+
+## Scenario 23: One positive cell, 2x2 grid, N much > H and W
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,1)`
+**And** a distance threshold `100000`  
+**And** H = `2`
+**And** W = `2`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `4` cells in the combined neighborhood
+
+---
+
+## Scenario 24: One positive cell at (0,0), 11x11 grid, N > H and W
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(0,0)`
+**And** a distance threshold `12`  
+**And** H = `11`
+**And** W = `11`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `85` cells in the combined neighborhood
+
+---
+
+## Scenario 25: One positive cell at (5,5), 11x11 grid, N > H and W
+
+**Given** a grid with exactly one positive cell  
+**And** the neighborhoods of those positive cells overlap  
+**And** one positive cell at position `(5,5)`
+**And** a distance threshold `12`  
+**And** H = `11`
+**And** W = `11`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `121` cells in the combined neighborhood
+
+---
+
+## Scenario 26: No positive cells
+
+**Given** a grid with no positive cells 
+**And** the neighborhoods of those positive cells overlap  
+**And** a distance threshold `3`  
+**And** H = `10`
+**And** W = `10`
+
+**When** the neighborhood count is calculated  
+
+**Then** overlapping cells are counted only once  
+**And** the result reflects the union of all neighborhoods  
+**And** includes `0` cells in the combined neighborhood
 
 ---
 
