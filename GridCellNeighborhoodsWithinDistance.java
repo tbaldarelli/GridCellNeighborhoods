@@ -114,6 +114,10 @@ public class GridCellNeighborhoodsWithinDistance
         // List of home bases, so cells with positive numbers.
         List<Position> homeBases = new ArrayList<>();
 
+        // Should be a property with setting/getter, but ignoring for now.
+        boolean fullSquare = false;
+
+
         // find positive value(s) and calculate grid cell neighborhoods
         for( List<Position> row : rows )
         {
@@ -135,10 +139,72 @@ public class GridCellNeighborhoodsWithinDistance
                      * We will hit the manhattan distance before the threshold in some cases, but the absolute outer limit is the
                      *  distance threshold, which will be a square.
                      */
-                    for( int yOffset = -distanceThreshold; yOffset <= distanceThreshold; yOffset++ )
+
+                    int minYOffset = -(distanceThreshold);                    
+                    int maxYOffset = distanceThreshold;
+
+                    // This ensures the bottom limit stays within the grid
+                    if(!fullSquare)
                     {
-                        // go through each row
+                        int endPoint = pos.y() + minYOffset;
+                        if(isDebug())
+                            System.out.println(" minYOffset initial: " + minYOffset + ", endPoint: " + endPoint + ", y: " + pos.y());
+                        if( endPoint < 0 )
+                        {
+                            // we want to add back the amount the endPoint is below zero
+                            minYOffset += -endPoint;
+                            if(isDebug())
+                                System.out.println("  adjusted minYOffset: " + minYOffset);
+                        }
+
+                        // this ensures the top limit stays within the grid
+                        endPoint = pos.y() + maxYOffset;
+                        if(isDebug())
+                            System.out.println(" maxYOffset initial: " + maxYOffset + ", endPoint: " + endPoint + ", height: " + height);
+                        if( endPoint >= height)
+                        {
+                            // We want to subtract the amount the endPoint is above the height
+                            maxYOffset -= (endPoint - height + 1);
+                            if(isDebug())
+                                System.out.println("  adjusted maxYOffset: " + maxYOffset);
+                        }
+                    }
+                    
+                    /* Even better way: think of it as a diamond shape inside a square.  The square is defined by the distance threshold.
+                     * This means that for the lowest row, we actually only care about the cell in the same column as the positive cell.  Next row up,
+                     * we care about one cell to the left and one to the right, etc., until we reach the row of the positive cell.  Then as we go above
+                     * the positive cell, we reverse the process.
+                     * 
+                     * 100,0000 took 36 seconds, so we would need to do some sort of optimization for larger grids.
+                     */
+                    for( int yOffset = minYOffset; yOffset <= maxYOffset; yOffset++ )
+                    {
+                        // go through each row, but keep in mind that it is a diamond shape
+                        int xOffsetMin = 0;
+                        int xOffsetMax = 0;
+
+                        if(fullSquare)
+                        {
+                            xOffsetMin = -distanceThreshold;
+                            xOffsetMax = distanceThreshold;
+                        }
+                        else
+                        {
+                            // This should start as 0 when yOffset is min or max yOffset
+                            xOffsetMin = distanceThreshold - Math.abs(yOffset);
+                            if(xOffsetMin != 0)
+                                xOffsetMin = -xOffsetMin;
+                            if(isDebug())
+                                System.out.println("  xOffsetMin initial: " + xOffsetMin + " = " + distanceThreshold + " - " + Math.abs(yOffset));
+                            xOffsetMax = distanceThreshold - Math.abs(yOffset);
+                            if(isDebug())
+                                System.out.println("  xOffsetMax initial: " + xOffsetMin + " = " + distanceThreshold + " - " + Math.abs(yOffset));
+                        }
+
+                        /* Old way, could be slow with large thresholds.
                         for( int xOffset = -distanceThreshold; xOffset <= distanceThreshold; xOffset++ )
+                         */
+                        for( int xOffset = xOffsetMin; xOffset <= xOffsetMax; xOffset++ )
                         {
 
                             int y = pos.y() + yOffset;
@@ -203,6 +269,7 @@ public class GridCellNeighborhoodsWithinDistance
         // Fill one positive value for example 1
         GridCellNeighborhoodsWithinDistance exampleToAdd = new GridCellNeighborhoodsWithinDistance(3, 11, 11,
             "1 positive, center", new Position(5, 5, 5));
+        // exampleToAdd.setDebug( true);
         examples.add(exampleToAdd);
 
         // Fill one positive value for example 2 
@@ -370,7 +437,7 @@ public class GridCellNeighborhoodsWithinDistance
             new Position(0, 1, 5));
         examples.add(exampleToAdd);
 
-        exampleToAdd = new GridCellNeighborhoodsWithinDistance(100, 2, 2,
+        exampleToAdd = new GridCellNeighborhoodsWithinDistance(100000, 2, 2,
             "1 positive, 2x2 grid, N much > H and W, should be 4",
             new Position(0, 1, 5));
         examples.add(exampleToAdd);
