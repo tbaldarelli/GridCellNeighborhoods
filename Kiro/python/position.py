@@ -17,7 +17,7 @@ class Position:
             column: The column coordinate (>= 0)
             
         Raises:
-            ValueError: If row or column is negative
+            ValueError: If row or column is negative (coordinates must be non-negative)
         """
         if row < 0:
             raise ValueError(f"Row must be non-negative, got {row}")

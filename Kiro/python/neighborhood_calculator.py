@@ -4,6 +4,7 @@ from typing import Set, List
 from position import Position
 from grid import Grid
 from boundary_handler import BoundaryHandler
+from exceptions import InvalidDistanceThresholdException
 
 
 class NeighborhoodCalculator:
@@ -28,10 +29,10 @@ class NeighborhoodCalculator:
             Set of positions within the neighborhood
             
         Raises:
-            ValueError: If distance_threshold is negative
+            InvalidDistanceThresholdException: If distance_threshold is negative
         """
         if distance_threshold < 0:
-            raise ValueError(f"Distance threshold must be non-negative, got {distance_threshold}")
+            raise InvalidDistanceThresholdException(distance_threshold)
         
         neighborhood = set()
         
@@ -62,15 +63,28 @@ class NeighborhoodCalculator:
             
         Returns:
             Total count of unique cells in all neighborhoods
+            
+        Raises:
+            InvalidDistanceThresholdException: If distance_threshold is negative
         """
         if distance_threshold < 0:
-            raise ValueError(f"Distance threshold must be non-negative, got {distance_threshold}")
+            raise InvalidDistanceThresholdException(distance_threshold)
         
         positive_cells = grid.get_positive_cells()
         
         # Handle edge case: no positive cells
         if not positive_cells:
             return 0
+        
+        # Optimization: if distance threshold exceeds grid dimensions,
+        # all grid cells will be included
+        max_possible_distance = (grid.height - 1) + (grid.width - 1)
+        if distance_threshold >= max_possible_distance:
+            return grid.height * grid.width
+        
+        # Handle edge case: zero distance threshold
+        if distance_threshold == 0:
+            return len(positive_cells)
         
         # Collect all neighborhood cells using set union
         all_neighborhood_cells = set()
@@ -90,15 +104,28 @@ class NeighborhoodCalculator:
             
         Returns:
             Set of all unique positions in neighborhoods
+            
+        Raises:
+            InvalidDistanceThresholdException: If distance_threshold is negative
         """
         if distance_threshold < 0:
-            raise ValueError(f"Distance threshold must be non-negative, got {distance_threshold}")
+            raise InvalidDistanceThresholdException(distance_threshold)
         
         positive_cells = grid.get_positive_cells()
         
         # Handle edge case: no positive cells
         if not positive_cells:
             return set()
+        
+        # Optimization: if distance threshold exceeds grid dimensions,
+        # return all grid cells
+        max_possible_distance = (grid.height - 1) + (grid.width - 1)
+        if distance_threshold >= max_possible_distance:
+            return {Position(row, col) for row in range(grid.height) for col in range(grid.width)}
+        
+        # Handle edge case: zero distance threshold
+        if distance_threshold == 0:
+            return set(positive_cells)
         
         # Collect all neighborhood cells using set union
         all_neighborhood_cells = set()

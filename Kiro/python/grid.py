@@ -2,6 +2,7 @@
 
 from typing import List, Set
 from position import Position
+from exceptions import InvalidGridDimensionsException, PositionOutOfBoundsException
 
 
 class Grid:
@@ -20,12 +21,11 @@ class Grid:
                   Expected format: cells[row][column] where row 0 is bottom of grid.
                   
         Raises:
-            ValueError: If height <= 0 or width <= 0, or if cells dimensions don't match
+            InvalidGridDimensionsException: If height <= 0 or width <= 0
+            ValueError: If cells dimensions don't match grid dimensions
         """
-        if height <= 0:
-            raise ValueError(f"Height must be positive, got {height}")
-        if width <= 0:
-            raise ValueError(f"Width must be positive, got {width}")
+        if height <= 0 or width <= 0:
+            raise InvalidGridDimensionsException(height, width)
             
         self.height = height
         self.width = width
@@ -77,10 +77,10 @@ class Grid:
             The cell value at the position
             
         Raises:
-            ValueError: If position is out of bounds
+            PositionOutOfBoundsException: If position is out of bounds
         """
         if not self.is_valid_position(position):
-            raise ValueError(f"Position {position} is out of bounds for grid {self.height}x{self.width}")
+            raise PositionOutOfBoundsException(position, self.height, self.width)
         return self.cells[position.row][position.column]
     
     def set_cell_value(self, position: Position, value: int) -> None:
@@ -91,10 +91,10 @@ class Grid:
             value: Value to set
             
         Raises:
-            ValueError: If position is out of bounds
+            PositionOutOfBoundsException: If position is out of bounds
         """
         if not self.is_valid_position(position):
-            raise ValueError(f"Position {position} is out of bounds for grid {self.height}x{self.width}")
+            raise PositionOutOfBoundsException(position, self.height, self.width)
         self.cells[position.row][position.column] = value
     
     def __repr__(self) -> str:

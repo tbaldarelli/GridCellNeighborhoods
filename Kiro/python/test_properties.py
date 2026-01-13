@@ -6,6 +6,7 @@ from position import Position
 from grid import Grid
 from boundary_handler import BoundaryHandler
 from neighborhood_calculator import NeighborhoodCalculator
+from exceptions import InvalidGridDimensionsException
 
 
 class TestPositionProperties:
@@ -73,8 +74,8 @@ class TestGridProperties:
             for row in grid.cells:
                 assert len(row) == width
         else:
-            # Invalid dimensions should raise ValueError
-            with pytest.raises(ValueError):
+            # Invalid dimensions should raise InvalidGridDimensionsException
+            with pytest.raises(InvalidGridDimensionsException):
                 Grid(height, width)
     
     @given(
@@ -501,3 +502,292 @@ class TestNeighborhoodCalculatorProperties:
         
         # Mathematical relationship: |A ∪ B| = |A| + |B| - |A ∩ B|
         assert len(union_cells) == len(neighborhood1) + len(neighborhood2) - len(overlap)
+    
+    @given(
+        height=st.integers(min_value=1, max_value=50),
+        width=st.integers(min_value=1, max_value=50),
+        positive_positions=st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=49),
+                st.integers(min_value=0, max_value=49)
+            ),
+            min_size=1,
+            max_size=20,
+            unique=True
+        )
+    )
+    def test_zero_distance_threshold(self, height, width, positive_positions):
+        """Property 10: Zero Distance Threshold
+        
+        For any grid with positive cells, when distance threshold N = 0, the 
+        neighborhood count should equal exactly the number of positive cells.
+        
+        **Feature: grid-neighborhoods, Property 10: Zero Distance Threshold**
+        **Validates: Requirements 7.2**
+        """
+        # Filter positions to be within grid bounds
+        valid_positions = [
+            (row, col) for row, col in positive_positions 
+            if row < height and col < width
+        ]
+        assume(len(valid_positions) > 0)  # Need at least one positive cell
+        
+        grid = Grid(height, width)
+        
+        # Set positive values at valid positions
+        for row, col in valid_positions:
+            pos = Position(row, col)
+            grid.set_cell_value(pos, 1)
+        
+        calculator = NeighborhoodCalculator()
+        
+        # With distance threshold 0, only positive cells themselves should be counted
+        distance_threshold = 0
+        total_count = calculator.count_neighborhood_cells(grid, distance_threshold)
+        
+        # Count should equal exactly the number of positive cells
+        expected_count = len(valid_positions)
+        assert total_count == expected_count
+        
+        # Verify using get_neighborhood_cells as well
+        all_cells = calculator.get_neighborhood_cells(grid, distance_threshold)
+        assert len(all_cells) == expected_count
+        
+        # All cells in the result should be positive cells
+        positive_cell_positions = {Position(row, col) for row, col in valid_positions}
+        assert all_cells == positive_cell_positions
+        
+        # Each positive cell should be in its own neighborhood of size 1
+        for row, col in valid_positions:
+            pos = Position(row, col)
+            neighborhood = calculator.enumerate_neighborhood(pos, distance_threshold, grid)
+            assert len(neighborhood) == 1
+            assert pos in neighborhood
+    
+    @given(
+        height=st.integers(min_value=1, max_value=20),
+        width=st.integers(min_value=1, max_value=20),
+        positive_positions=st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=19),
+                st.integers(min_value=0, max_value=19)
+            ),
+            min_size=1,
+            max_size=10,
+            unique=True
+        )
+    )
+    def test_maximum_distance_threshold(self, height, width, positive_positions):
+        """Property 11: Maximum Distance Threshold
+        
+        For any grid and distance threshold N that exceeds the grid's maximum 
+        possible Manhattan distance, the neighborhood count should equal the total 
+        number of grid cells when positive cells exist.
+        
+        **Feature: grid-neighborhoods, Property 11: Maximum Distance Threshold**
+        **Validates: Requirements 7.3**
+        """
+        # Filter positions to be within grid bounds
+        valid_positions = [
+            (row, col) for row, col in positive_positions 
+            if row < height and col < width
+        ]
+        assume(len(valid_positions) > 0)  # Need at least one positive cell
+        
+        grid = Grid(height, width)
+        
+        # Set positive values at valid positions
+        for row, col in valid_positions:
+            pos = Position(row, col)
+            grid.set_cell_value(pos, 1)
+        
+        calculator = NeighborhoodCalculator()
+        
+        # Calculate maximum possible Manhattan distance in the grid
+        # This is from bottom-left (0,0) to top-right (height-1, width-1)
+        max_possible_distance = (height - 1) + (width - 1)
+        
+        # Use a distance threshold that exceeds the maximum possible distance
+        excessive_distance_threshold = max_possible_distance + 10
+        
+        total_count = calculator.count_neighborhood_cells(grid, excessive_distance_threshold)
+        
+        # When distance threshold exceeds grid dimensions, all grid cells should be counted
+        expected_count = height * width
+        assert total_count == expected_count
+        
+        # Verify using get_neighborhood_cells as well
+        all_cells = calculator.get_neighborhood_cells(grid, excessive_distance_threshold)
+        assert len(all_cells) == expected_count
+        
+        # All cells in the grid should be included
+        expected_cells = {Position(row, col) for row in range(height) for col in range(width)}
+        assert all_cells == expected_cells
+        
+        # Test with multiple excessive thresholds
+        for extra in [1, 5, 50, 100]:
+            excessive_threshold = max_possible_distance + extra
+            count = calculator.count_neighborhood_cells(grid, excessive_threshold)
+            assert count == expected_count
+            
+            cells = calculator.get_neighborhood_cells(grid, excessive_threshold)
+            assert len(cells) == expected_count
+            assert cells == expected_cells
+    
+    @given(
+        grid_type=st.sampled_from(['1xN', 'Nx1', '1x1']),
+        dimension=st.integers(min_value=1, max_value=50),
+        positive_index=st.integers(min_value=0, max_value=49),
+        distance_threshold=st.integers(min_value=0, max_value=20)
+    )
+    def test_degenerate_grid_handling(self, grid_type, dimension, positive_index, distance_threshold):
+        """Property 12: Degenerate Grid Handling
+        
+        For any grid with unusual dimensions (1×N, N×1, 1×1), neighborhood 
+        calculations should produce mathematically correct results consistent 
+        with the Manhattan distance definition.
+        
+        **Feature: grid-neighborhoods, Property 12: Degenerate Grid Handling**
+        **Validates: Requirements 7.4**
+        """
+        # Create degenerate grid based on type
+        if grid_type == '1xN':
+            height, width = 1, dimension
+            max_valid_index = width - 1
+        elif grid_type == 'Nx1':
+            height, width = dimension, 1
+            max_valid_index = height - 1
+        else:  # '1x1'
+            height, width = 1, 1
+            max_valid_index = 0
+        
+        # Ensure positive index is within bounds
+        assume(positive_index <= max_valid_index)
+        
+        grid = Grid(height, width)
+        
+        # Place positive cell at valid position
+        if grid_type == '1xN':
+            positive_pos = Position(0, positive_index)
+        elif grid_type == 'Nx1':
+            positive_pos = Position(positive_index, 0)
+        else:  # '1x1'
+            positive_pos = Position(0, 0)
+        
+        grid.set_cell_value(positive_pos, 1)
+        
+        calculator = NeighborhoodCalculator()
+        
+        # Calculate neighborhood
+        neighborhood = calculator.enumerate_neighborhood(positive_pos, distance_threshold, grid)
+        total_count = calculator.count_neighborhood_cells(grid, distance_threshold)
+        
+        # Verify basic properties
+        assert len(neighborhood) == total_count
+        assert positive_pos in neighborhood  # Self-inclusion
+        
+        # For degenerate grids, verify Manhattan distance calculation is correct
+        for cell in neighborhood:
+            manhattan_dist = positive_pos.manhattan_distance(cell)
+            assert manhattan_dist <= distance_threshold
+        
+        # Verify all cells within distance threshold are included
+        expected_cells = set()
+        for row in range(height):
+            for col in range(width):
+                candidate_pos = Position(row, col)
+                if positive_pos.manhattan_distance(candidate_pos) <= distance_threshold:
+                    expected_cells.add(candidate_pos)
+        
+        assert neighborhood == expected_cells
+        assert total_count == len(expected_cells)
+        
+        # Special case verification for 1x1 grid
+        if grid_type == '1x1':
+            if distance_threshold >= 0:
+                assert total_count == 1
+                assert neighborhood == {Position(0, 0)}
+        
+        # For 1xN grids, neighborhood should be a horizontal line segment
+        elif grid_type == '1xN':
+            for cell in neighborhood:
+                assert cell.row == 0  # All cells should be in row 0
+                # Distance from positive cell should be within threshold
+                col_distance = abs(cell.column - positive_pos.column)
+                assert col_distance <= distance_threshold
+        
+        # For Nx1 grids, neighborhood should be a vertical line segment
+        elif grid_type == 'Nx1':
+            for cell in neighborhood:
+                assert cell.column == 0  # All cells should be in column 0
+                # Distance from positive cell should be within threshold
+                row_distance = abs(cell.row - positive_pos.row)
+                assert row_distance <= distance_threshold
+        
+        # Verify boundary constraints are respected
+        for cell in neighborhood:
+            assert 0 <= cell.row < height
+            assert 0 <= cell.column < width
+        
+        # Test consistency with get_neighborhood_cells
+        all_cells = calculator.get_neighborhood_cells(grid, distance_threshold)
+        assert all_cells == neighborhood
+        assert len(all_cells) == total_count
+
+
+class TestEdgeCases:
+    """Unit tests for edge cases and specific scenarios."""
+    
+    def test_empty_grid_edge_case(self):
+        """Test scenario with no positive cells returns count 0.
+        
+        **Validates: Requirements 7.1**
+        """
+        # Test various grid sizes with no positive cells
+        test_cases = [
+            (1, 1),
+            (5, 5),
+            (10, 3),
+            (1, 20),
+            (20, 1)
+        ]
+        
+        calculator = NeighborhoodCalculator()
+        
+        for height, width in test_cases:
+            grid = Grid(height, width)
+            # Grid is created with all zeros by default (no positive cells)
+            
+            # Test with various distance thresholds
+            for distance_threshold in [0, 1, 5, 10, 100]:
+                count = calculator.count_neighborhood_cells(grid, distance_threshold)
+                assert count == 0, f"Expected 0 for empty {height}x{width} grid with threshold {distance_threshold}"
+                
+                cells = calculator.get_neighborhood_cells(grid, distance_threshold)
+                assert len(cells) == 0, f"Expected empty set for empty {height}x{width} grid with threshold {distance_threshold}"
+                assert cells == set(), f"Expected empty set for empty {height}x{width} grid with threshold {distance_threshold}"
+        
+        # Test explicitly setting all cells to zero or negative
+        grid = Grid(3, 3)
+        for row in range(3):
+            for col in range(3):
+                pos = Position(row, col)
+                grid.set_cell_value(pos, 0)  # Explicitly set to zero
+        
+        count = calculator.count_neighborhood_cells(grid, 5)
+        assert count == 0
+        
+        cells = calculator.get_neighborhood_cells(grid, 5)
+        assert len(cells) == 0
+        
+        # Test with negative values (should also be treated as non-positive)
+        for row in range(3):
+            for col in range(3):
+                pos = Position(row, col)
+                grid.set_cell_value(pos, -1)  # Set to negative
+        
+        count = calculator.count_neighborhood_cells(grid, 5)
+        assert count == 0
+        
+        cells = calculator.get_neighborhood_cells(grid, 5)
+        assert len(cells) == 0

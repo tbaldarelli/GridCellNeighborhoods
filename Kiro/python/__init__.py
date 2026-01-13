@@ -2,5 +2,16 @@
 
 from .position import Position
 from .grid import Grid
+from .exceptions import (
+    InvalidGridDimensionsException,
+    PositionOutOfBoundsException,
+    InvalidDistanceThresholdException
+)
 
-__all__ = ['Position', 'Grid']
+__all__ = [
+    'Position', 
+    'Grid',
+    'InvalidGridDimensionsException',
+    'PositionOutOfBoundsException', 
+    'InvalidDistanceThresholdException'
+]
