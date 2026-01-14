@@ -40,6 +40,7 @@ class TestSinglePositiveCellScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 1: Expected=25, Grid=11x11, N=3, Pos=[(5,5)], Got={count}")
         assert count == 25
     
     def test_scenario_2_single_positive_cell_near_edge(self):
@@ -66,6 +67,7 @@ class TestSinglePositiveCellScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 2: Expected=21, Grid=11x11, N=3, Pos=[(5,1)], Got={count}")
         assert count == 21
 
 
@@ -98,6 +100,7 @@ class TestMultiplePositiveCellsNonOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 3: Expected=26, Grid=11x11, N=2, Pos=[(3,3),(7,7)], Got={count}")
         assert count == 26
 
 
@@ -130,6 +133,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 4: Expected=22, Grid=11x11, N=2, Pos=[(3,3),(4,5)], Got={count}")
         assert count == 22
     
     def test_scenario_5_overlapping_out_of_bounds_left(self):
@@ -158,6 +162,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 5: Expected=18, Grid=11x11, N=2, Pos=[(3,0),(4,2)], Got={count}")
         assert count == 18
     
     def test_scenario_6_overlapping_out_of_bounds_bottom_left(self):
@@ -186,6 +191,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 6: Expected=14, Grid=11x11, N=2, Pos=[(0,0),(1,2)], Got={count}")
         assert count == 14
     
     def test_scenario_7_overlapping_out_of_bounds_bottom(self):
@@ -214,6 +220,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 7: Expected=17, Grid=11x11, N=2, Pos=[(0,3),(1,5)], Got={count}")
         assert count == 17
     
     def test_scenario_8_overlapping_out_of_bounds_right(self):
@@ -242,6 +249,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 8: Expected=18, Grid=11x11, N=2, Pos=[(3,8),(4,10)], Got={count}")
         assert count == 18
     
     def test_scenario_9_overlapping_out_of_bounds_top(self):
@@ -270,6 +278,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 9: Expected=17, Grid=11x11, N=2, Pos=[(9,3),(10,5)], Got={count}")
         assert count == 17
     
     def test_scenario_10_overlapping_diagonally_adjacent(self):
@@ -298,6 +307,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 10: Expected=18, Grid=11x11, N=2, Pos=[(3,3),(4,4)], Got={count}")
         assert count == 18
     
     def test_scenario_11_overlapping_same_row_adjacent(self):
@@ -326,6 +336,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 11: Expected=18, Grid=11x11, N=2, Pos=[(3,3),(3,4)], Got={count}")
         assert count == 18
     
     def test_scenario_12_overlapping_same_column_adjacent(self):
@@ -354,6 +365,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 12: Expected=18, Grid=11x11, N=2, Pos=[(3,4),(4,4)], Got={count}")
         assert count == 18
     
     def test_scenario_13_opposite_corners(self):
@@ -382,6 +394,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 13: Expected=20, Grid=11x11, N=3, Pos=[(0,0),(10,10)], Got={count}")
         assert count == 20
     
     def test_scenario_14_three_in_one_corner(self):
@@ -412,6 +425,7 @@ class TestMultiplePositiveCellsOverlapping:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 14: Expected=15, Grid=11x11, N=3, Pos=[(10,9),(9,10),(10,10)], Got={count}")
         assert count == 15
 
 
@@ -440,6 +454,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 15: Expected=7, Grid=1x21, N=3, Pos=[(0,9)], Got={count}")
         assert count == 7
     
     def test_scenario_16_21x1_grid(self):
@@ -463,6 +478,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 16: Expected=7, Grid=21x1, N=3, Pos=[(10,0)], Got={count}")
         assert count == 7
     
     def test_scenario_17_1x1_grid(self):
@@ -486,6 +502,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=0)
         
+        print(f"Scenario 17: Expected=1, Grid=1x1, N=0, Pos=[(0,0)], Got={count}")
         assert count == 1
     
     def test_scenario_18_20x20_grid_threshold_zero(self):
@@ -509,6 +526,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=0)
         
+        print(f"Scenario 18: Expected=1, Grid=20x20, N=0, Pos=[(0,0)], Got={count}")
         assert count == 1
     
     def test_scenario_19_2x2_grid(self):
@@ -532,6 +550,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=2)
         
+        print(f"Scenario 19: Expected=4, Grid=2x2, N=2, Pos=[(0,1)], Got={count}")
         assert count == 4
     
     def test_scenario_20_21x3_grid_n_greater_than_w(self):
@@ -555,6 +574,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=5)
         
+        print(f"Scenario 20: Expected=27, Grid=21x3, N=5, Pos=[(10,2)], Got={count}")
         assert count == 27
     
     def test_scenario_21_4x15_grid_n_greater_than_h(self):
@@ -578,6 +598,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=5)
         
+        print(f"Scenario 21: Expected=36, Grid=4x15, N=5, Pos=[(2,9)], Got={count}")
         assert count == 36
     
     def test_scenario_22_2x2_grid_n_greater_than_both(self):
@@ -601,6 +622,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 22: Expected=4, Grid=2x2, N=3, Pos=[(0,1)], Got={count}")
         assert count == 4
     
     def test_scenario_23_2x2_grid_n_much_greater(self):
@@ -624,6 +646,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=100000)
         
+        print(f"Scenario 23: Expected=4, Grid=2x2, N=100000, Pos=[(0,1)], Got={count}")
         assert count == 4
     
     def test_scenario_24_11x11_grid_corner_large_n(self):
@@ -647,6 +670,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=12)
         
+        print(f"Scenario 24: Expected=85, Grid=11x11, N=12, Pos=[(0,0)], Got={count}")
         assert count == 85
     
     def test_scenario_25_11x11_grid_center_large_n(self):
@@ -670,6 +694,7 @@ class TestDegenerateGridScenarios:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=12)
         
+        print(f"Scenario 25: Expected=121, Grid=11x11, N=12, Pos=[(5,5)], Got={count}")
         assert count == 121
 
 
@@ -696,4 +721,5 @@ class TestNoPositiveCellsScenario:
         calculator = NeighborhoodCalculator()
         count = calculator.count_neighborhood_cells(grid, distance_threshold=3)
         
+        print(f"Scenario 26: Expected=0, Grid=10x10, N=3, Pos=[], Got={count}")
         assert count == 0

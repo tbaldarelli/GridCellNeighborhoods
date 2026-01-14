@@ -265,6 +265,36 @@ The system requires both unit testing and property-based testing for comprehensi
 3. **Error Conditions**: All validation and error handling paths must be tested
 4. **Cross-Language**: Identical test suites must be implemented in each target language
 
+### Cross-Language Validation Output
+
+To facilitate comparison and validation across different language implementations, all BDD scenario tests should output standardized information:
+
+**Output Format**:
+```
+Scenario {N}: Expected={expected}, Grid={H}x{W}, N={threshold}, Pos=[{positions}], Got={actual}
+```
+
+**Example**:
+```
+Scenario 1: Expected=25, Grid=11x11, N=3, Pos=[(5,5)], Got=25
+Scenario 4: Expected=22, Grid=11x11, N=2, Pos=[(3,3),(4,5)], Got=22
+```
+
+**Implementation Guidelines**:
+- Output should be printed/logged for every BDD scenario test
+- Format should be consistent across all language implementations
+- Output should be visible when tests pass (not just on failure)
+- This enables easy comparison between implementations to verify:
+  - All implementations produce identical results
+  - BDD scenarios are correctly implemented
+  - No transcription errors in test data
+
+**Usage**:
+- Run tests with output enabled (e.g., `pytest -s`, `java ClassName`, etc.)
+- Compare output across language implementations
+- Verify Expected matches Got for all scenarios
+- Identify any discrepancies between implementations
+
 ### Performance Testing
 
 While not part of correctness properties, performance characteristics should be validated:
