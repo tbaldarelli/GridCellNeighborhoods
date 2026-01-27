@@ -236,10 +236,50 @@ The implementation is ready for use and serves as a reference for implementation
 ## Some notes when comparing to my Java implementation, and lessons learned.
 
  - I can confirm that test results from python give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log
- 
- - Some new things I learned about Python:
- NOTE: rework below as positive statements, not "what I learned".  For insance, something like "I really like how python let's my dynamically create even properties, unlike C where I first have to declare it with a type."
-   - Unlike Java/C++/etc, for Python class properties/attributes are dynamic and created when first assigned.  I knew variables were dynamic and could be created when assigned, I did not know the class properties could be as well.  I guess that is obvious in hindsight, just didn't occur to me.
-   - Now I know that "_" means that we don't care about the value, and will not be using it again.  So in loop related conditions, it is similar to "i".
-   - 
 
+### Implementation Comparison
+   - In my by hand Java version, we do it all in one file, and don't use automatic unit testing, while in Python we have multiple files and automatic unit testing.
+   - In my by hand Java version is a much simpler implementation, but also much less versatile.
+   - In my by hand Java version has a simpler but less flexible setup.
+   - My by hand Java version can be run from command line (has a `main`), for Python I chose to just use unit testing feature.
+   - The core count neighborhood cells logic:
+      - For my by hand Java version, we first loop row by row, and find the positive cell in that row.  Once we find the positive cell, we originally created a square of distanceThreshold squares around that positive cell, and went row by row up from bottom line of this square to the top line.  Eventually we figured out that it could be a diamond shape, so we could improve performance by by taking that into account.  So on the bottom row, we only consider the cell that is at the same column as our positive cell, then one row up we consider three cells, and so on, obviously taking into account that we cannot go outside the grid.
+      - For the Python version, we first  get all the positive cells from the grid.  If we don't have any, we immediately return 0.  If we do have some but the threshold is 0, we just return the number of positive cells.  If there was just one positive cell, we get that cells neighborhood and return it.  If there is more than one, we add them all together, using "set" to do a union on all the neighborhood cell lists.  From here it is very similar to Java version above, but one interesting choice is that we get the center row (based on the positive cell), and then calculate the delta between the centor row and the row we are on.  Using that delta, we get the remaining distance, which we then use to get the min and max column for that particular row.  It ends up being the same as my Java version, but it is much simpler. So the Python version short-circuits in more scenarios than my Java version does.
+
+#### Python Advantages
+   - Unlike Java/C++/etc, for Python class properties/attributes are dynamic and created when first assigned.  Python's dynamic attribute creation (`self.height = height`) is more concise than Java's required field declarations.  This allows faster prototyping while type hints provide optional documentation.
+   - Python's `_` convention for unused loop variables (`for _ in range(n)`) clearly signals the intent, making the code more readable than using `i` when the index is not needed.
+   - Python's chained comparisons (`0 <= x < max`) are more readable than Java's `x >= 0 && x < max`.
+   - Python's list complrehensions, such as `self.cells = [[0 for _ in range(width)] for _ in range(height)]
+`, are a really handy feature, allowing concise initialization of nested lists, among other things.  In Java, we would have to do it as two `for` loops.  If it was not a nested list, but just one list, Java would still require a `for` loop to initialize it.
+   - More dynamic, so if you are good with Python, it is quicker to prototype things.
+
+#### Java Advantages
+  - Since Java normally forces us to define types ahead of time, with the variable declaration, it provides more obvious type safety than Python.  This could help us find errors early as well.  It is also self-documenting.
+  - While the conciseness of Python is handy, especially the list comprehension syntax I mentioned above, sometimes it is much more obvious what is happening if it is done more explicitly.  For instance, I could define the positive cells in Python using this:
+  ```
+  positive_cells = [Position(row, col) 
+      for row in range(self.height) 
+      for col in range(self.width) 
+      if self.cells[row][col] > 0]
+  ```
+  But it is more explicit to do it like this:
+  ```   
+  List<Position> positiveCells = new ArrayList<>();
+      for (int row = 0; row < this.height; row++) {
+          for (int col = 0; col < this.width; col++) {
+              if (this.cells[row][col] > 0) {
+                  positiveCells.add(new Position(row, col));
+              }
+          }
+      }
+  ```
+  In fact, in my Python version, I did it like this:
+  ```
+  positive_cells = []
+  for row in range(self.height):
+    for col in range(self.width):
+        if self.cells[row][col] > 0:
+            positive_cells.append(Position(row, col))
+  ```
+  - Java is a compiled language, which means we can see many errors before those errors ever get to users. 
