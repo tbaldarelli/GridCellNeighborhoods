@@ -228,3 +228,18 @@ The Python implementation successfully fulfills all requirements with:
 - Efficient algorithms leveraging Python's strengths
 
 The implementation is ready for use and serves as a reference for implementations in other languages.
+
+## Using it.
+
+- **Run Tests**: `cd python && python -m pytest -v`
+
+## Some notes when comparing to my Java implementation, and lessons learned.
+
+ - I can confirm that test results from python give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log
+ 
+ - Some new things I learned about Python:
+ NOTE: rework below as positive statements, not "what I learned".  For insance, something like "I really like how python let's my dynamically create even properties, unlike C where I first have to declare it with a type."
+   - Unlike Java/C++/etc, for Python class properties/attributes are dynamic and created when first assigned.  I knew variables were dynamic and could be created when assigned, I did not know the class properties could be as well.  I guess that is obvious in hindsight, just didn't occur to me.
+   - Now I know that "_" means that we don't care about the value, and will not be using it again.  So in loop related conditions, it is similar to "i".
+   - 
+
