@@ -28,8 +28,7 @@ TEST_EXEC = $(TEST_PROPERTIES_EXEC) $(TEST_BDD_EXEC)
 all: directories $(TEST_EXEC)
 
 directories:
-	@mkdir -p $(OBJ_DIR)
-	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 
 # Compile source files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c

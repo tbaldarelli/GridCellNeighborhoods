@@ -67,6 +67,18 @@ PositionSet* neighborhood_calculator_get_cells(const Grid* grid, int distance_th
         return all_cells;
     }
     
+    // Optimization: If distance threshold exceeds maximum possible distance,
+    // return all grid cells (early termination)
+    int max_possible_distance = (grid->height - 1) + (grid->width - 1);
+    if (distance_threshold >= max_possible_distance) {
+        for (int row = 0; row < grid->height; row++) {
+            for (int col = 0; col < grid->width; col++) {
+                position_set_add(all_cells, position_create(row, col));
+            }
+        }
+        return all_cells;
+    }
+    
     // Enumerate neighborhoods for each positive cell
     for (int i = 0; i < grid->positive_cell_count; i++) {
         PositionSet* neighborhood = enumerate_neighborhood(
