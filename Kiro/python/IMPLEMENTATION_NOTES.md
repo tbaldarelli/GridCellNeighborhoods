@@ -240,6 +240,7 @@ The implementation is ready for use and serves as a reference for implementation
  - I can confirm that test results from python give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log
 
 ### Implementation Comparison
+
    - In my by hand Java version, we do it all in one file, and don't use automatic unit testing, while in Python we have multiple files and automatic unit testing.
    - In my by hand Java version is a much simpler implementation, but also much less versatile.
    - In my by hand Java version has a simpler but less flexible setup.
