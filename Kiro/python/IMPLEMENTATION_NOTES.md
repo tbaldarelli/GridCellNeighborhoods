@@ -231,7 +231,9 @@ The implementation is ready for use and serves as a reference for implementation
 
 ## Using it.
 
-- **Run Tests**: `cd python && python -m pytest -v`
+- **Run Tests**: `cd python && python3.12 -m pytest -v`
+  - Or: `python3 -m pytest -v`
+  - Or: `python -m pytest -v` (depending on your system)
 
 ## Some notes when comparing to my Java implementation, and lessons learned.
 
