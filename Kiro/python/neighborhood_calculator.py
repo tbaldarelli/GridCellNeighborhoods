@@ -52,10 +52,6 @@ class NeighborhoodCalculator:
         min_row = max(0, center.row - distance_threshold)
         max_row = min(grid.height - 1, center.row + distance_threshold)
         
-        # Pre-allocate set with estimated size for better memory efficiency
-        # Maximum possible size is (N+1)^2 + N^2 for a complete diamond
-        estimated_size = min((distance_threshold + 1) ** 2 + distance_threshold ** 2, 
-                            grid.height * grid.width)
         neighborhood = set()
         
         # Diamond enumeration: for each row offset, calculate column range
