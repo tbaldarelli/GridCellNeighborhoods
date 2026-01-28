@@ -298,24 +298,23 @@ Scenario 4: Expected=22, Grid=11x11, N=2, Pos=[(3,3),(4,5)], Got=22
 
 ## Property-Based Test Status
 
-**Working Properties (5/13):**
-- ✅ Property 1: Grid Validation
-- ✅ Property 2: Manhattan Distance Calculation
+**All Property Tests Passing (13/13):**
+- ✅ Property 1: Manhattan Distance Calculation
+- ✅ Property 2: Grid Validation
 - ✅ Property 3: Coordinate System Consistency
-- ✅ Property 4: Self-Inclusion in Neighborhoods
-- ✅ Property 6: Boundary Constraint Enforcement
+- ✅ Property 4: Boundary Constraint Enforcement
+- ✅ Property 5: Self-Inclusion in Neighborhoods
+- ✅ Property 6: Complete Neighborhood Enumeration
+- ✅ Property 7: Cell Uniqueness Guarantee
+- ✅ Property 8: Non-Overlapping Additivity
+- ✅ Property 9: Overlapping Union Behavior
+- ✅ Property 10: Zero Distance Threshold
+- ✅ Property 11: Maximum Distance Threshold
+- ✅ Property 12: Degenerate Grid Handling
+- ✅ Property 13: Cross-Language Result Consistency
 
-**Properties Needing Investigation (8/13):**
-- ⚠️ Property 5: Complete Neighborhood Enumeration
-- ⚠️ Property 7: Cell Uniqueness Guarantee
-- ⚠️ Property 8: Non-Overlapping Additivity
-- ⚠️ Property 9: Overlapping Union Behavior
-- ⚠️ Property 10: Zero Distance Threshold
-- ⚠️ Property 11: Maximum Distance Threshold
-- ⚠️ Property 12: Degenerate Grid Handling
-- ⚠️ Property 13: Cross-Language Result Consistency
+**Note:** Initial test failures were due to test setup issues (max grid size too small for distance thresholds being tested). Fixed by increasing max grid size from 20 to 50 in property tests.
 
-**Note:** The failing property tests appear to be test infrastructure issues rather than implementation bugs, as all BDD scenarios pass. Further debugging needed to isolate the specific test failures.
 
 ## Dependencies
 
@@ -398,3 +397,27 @@ Both implementations follow the same core algorithm from design.md:
 - Same coordinate system (bottom-left origin)
 
 The C implementation proves the algorithm is language-agnostic and can be efficiently implemented in systems programming languages while maintaining correctness.
+
+## Some my notes when comparing to my Java implementation, and lessons learned.  Everything above automatically generated, for most part.
+
+ - I can confirm that test results from C give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log
+
+ ### Implementation Comparison
+
+ - See above, mostly same logic as normal implementation, but with explicit memory management and error codes.
+ - The C implementation is more verbose due to manual memory management and error handling.  However, it will normally be more efficient and predictable in terms of performance and resource usage (in this case, it doesn't really matter).
+ - The use of a custom PositionSet data structure in C is similar to using a HashSet in Java, but with more explicit control over memory allocation and deallocation.  In my C code from my old job, somehow I never actually used Sets.  I did use Key/Value pairs, but somehow we got away with no Set logic. Not really sure how, but this is rather simple logic, so surprised me.
+ - The biggest change from Java and Python implementations is that in both versions, we actually make a grid, a real 2-D array.  For C version, we actually don't make a grid, we just record the positive cells.  Then, when we enumerate the cells, we simply use the grid's height and width to determine if we can add the neighoring cells to the set.  If we can, we add it.  This is definitely a space saving advantage.   Obviously, the same thing could be done in almost any language, but the Java/Python way is a little more robust, in my opinion.  But that is a paranoid perspective, not an efficient perspective.
+ - The Check testing framework is a handy tool for unit testing in C, similar to JUnit in Java or pytest in Python.  It is actually pretty easy to use.  I admit, I let the AI choose it, and it is  the most common one I found online.  For instance, after a quick search, I found Unity, CUnit, and a few others.  The AI chose it because it was the path of least resistent (MSYS2 availability), it is mature, and isolates processes for testing.  Unity is simpler and lighter, but doesn't do this.
+ - Minor point, but the code looks very similar to object oriented style.  This is not wrong, and actually makes the functions easier to use and predict, but a lot of times C code is not so well organized and segrated, with nice little "create" and "destory" routines.
+ - Since our codebase predated C99, we never used `bool`.  Also, we compiled with `-ansi`, which didn't support `bool`.
+ - Maybe because our codebase was older, when we returned structures, we almost always returned a pointer to the structure, often allocated to memory.  Don't get me wrong, we didn't always do that, but it was often enough that it took me a minute to remember that when I first read `position.c`.
+
+ #### C Advantages
+  - More efficient memory usage and predictable peformance
+
+ #### Java/Python Advantages
+  - Less verbose code due to automatic memory management
+  - Rich standard libraries reduce boilerplate
+  - Easier to prototype and iterate quickly.  Yes, Java requires compilation, but because of the libraries, it still saves some time in that regard.
+  - Built-in testing frameworks (Hypothesis/JUnit) simplify property and BDD testing
