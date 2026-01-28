@@ -28,21 +28,23 @@ TEST_EXEC = $(TEST_PROPERTIES_EXEC) $(TEST_BDD_EXEC)
 all: directories $(TEST_EXEC)
 
 directories:
-	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(BIN_DIR)
 
 # Compile source files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | directories
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile test files
-$(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
+$(OBJ_DIR)/%.o: $(TEST_DIR)/%.c | directories
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link test executables
-$(TEST_PROPERTIES_EXEC): $(OBJECTS) $(OBJ_DIR)/test_properties.o
+$(TEST_PROPERTIES_EXEC): $(OBJECTS) $(OBJ_DIR)/test_properties.o | directories
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(TEST_BDD_EXEC): $(OBJECTS) $(OBJ_DIR)/test_bdd_scenarios.o
+$(TEST_BDD_EXEC): $(OBJECTS) $(OBJ_DIR)/test_bdd_scenarios.o | directories
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Run tests

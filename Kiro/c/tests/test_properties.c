@@ -7,6 +7,7 @@
 
 #include <check.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 #include <math.h>
 #include "../include/grid.h"
@@ -241,8 +242,8 @@ START_TEST(test_complete_neighborhood_enumeration) {
     
     for (int i = 0; i < PROPERTY_TEST_ITERATIONS; i++) {
         int distance_threshold = rand_range(1, 10);
-        int height = rand_range(2 * distance_threshold + 3, 20);
-        int width = rand_range(2 * distance_threshold + 3, 20);
+        int height = rand_range(2 * distance_threshold + 3, 50);
+        int width = rand_range(2 * distance_threshold + 3, 50);
         
         /* Place positive cell away from boundaries so full diamond fits */
         int center_row = distance_threshold + 1;
@@ -268,10 +269,8 @@ START_TEST(test_complete_neighborhood_enumeration) {
         /* Diamond size formula: (N+1)^2 + N^2 */
         int expected_size = (distance_threshold + 1) * (distance_threshold + 1) + 
                            distance_threshold * distance_threshold;
-        
         /* Verify we got the expected complete diamond */
         ck_assert_int_eq(position_set_size(neighborhood), expected_size);
-        
         /* Verify all cells in the diamond are present */
         for (int delta_row = -distance_threshold; delta_row <= distance_threshold; delta_row++) {
             int remaining_distance = distance_threshold - abs(delta_row);
@@ -756,18 +755,14 @@ Suite* properties_suite(void) {
     
     TCase* tc_neighborhood = tcase_create("Neighborhood Properties");
     tcase_add_test(tc_neighborhood, test_self_inclusion_in_neighborhoods);
-    /* NOTE: Tests 6-13 disabled due to runtime issues - need further investigation
-     * All BDD scenarios pass, so core functionality is correct.
-     * These property tests may have issues with test setup or Check framework interaction.
-     */
-    //tcase_add_test(tc_neighborhood, test_complete_neighborhood_enumeration);
-    //tcase_add_test(tc_neighborhood, test_cell_uniqueness_guarantee);
-    //tcase_add_test(tc_neighborhood, test_non_overlapping_additivity);
-    //tcase_add_test(tc_neighborhood, test_overlapping_union_behavior);
-    //tcase_add_test(tc_neighborhood, test_zero_distance_threshold);
-    //tcase_add_test(tc_neighborhood, test_maximum_distance_threshold);
-    //tcase_add_test(tc_neighborhood, test_degenerate_grid_handling);
-    //tcase_add_test(tc_neighborhood, test_cross_language_result_consistency);
+    tcase_add_test(tc_neighborhood, test_complete_neighborhood_enumeration);
+    tcase_add_test(tc_neighborhood, test_cell_uniqueness_guarantee);
+    tcase_add_test(tc_neighborhood, test_non_overlapping_additivity);
+    tcase_add_test(tc_neighborhood, test_overlapping_union_behavior);
+    tcase_add_test(tc_neighborhood, test_zero_distance_threshold);
+    tcase_add_test(tc_neighborhood, test_maximum_distance_threshold);
+    tcase_add_test(tc_neighborhood, test_degenerate_grid_handling);
+    tcase_add_test(tc_neighborhood, test_cross_language_result_consistency);
     suite_add_tcase(s, tc_neighborhood);
     
     return s;
