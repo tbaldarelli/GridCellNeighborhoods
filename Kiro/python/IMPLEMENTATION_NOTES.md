@@ -235,7 +235,7 @@ The implementation is ready for use and serves as a reference for implementation
   - Or: `python3 -m pytest -v`
   - Or: `python -m pytest -v` (depending on your system)
 
-## Some notes when comparing to my Java implementation, and lessons learned.
+## Some notes when comparing to my Java implementation, and lessons learned.  Everything above automatically generated, for most part.
 
  - I can confirm that test results from python give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log
 
