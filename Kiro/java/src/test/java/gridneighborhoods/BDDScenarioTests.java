@@ -1,6 +1,9 @@
 package gridneighborhoods;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -10,12 +13,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * Each scenario validates the system against concrete examples with specific expected counts.
  * 
  * All scenarios use an 11x11 grid unless otherwise specified.
+ * 
+ * Tests are executed in the order specified by @Order annotations.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BDDScenarioTests {
     
     // Single Positive Cell Scenarios (1-2)
     
     @Test
+    @Order(1)
     void testScenario1_SinglePositiveCellFullyContained() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(5, 5), 1);
@@ -28,6 +35,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(2)
     void testScenario2_SinglePositiveCellNearEdge() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(5, 1), 1);
@@ -42,6 +50,7 @@ public class BDDScenarioTests {
     // Multiple Positive Cells Non-Overlapping (3)
     
     @Test
+    @Order(3)
     void testScenario3_NonOverlappingNeighborhoods() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 3), 1);
@@ -57,6 +66,7 @@ public class BDDScenarioTests {
     // Multiple Positive Cells Overlapping (4-14)
     
     @Test
+    @Order(4)
     void testScenario4_OverlappingNeighborhoods() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 3), 1);
@@ -70,6 +80,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(5)
     void testScenario5_OverlappingOutOfBoundsLeft() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 0), 1);
@@ -83,6 +94,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(6)
     void testScenario6_OverlappingOutOfBoundsBottomLeft() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(0, 0), 1);
@@ -96,6 +108,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(7)
     void testScenario7_OverlappingOutOfBoundsBottom() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(0, 3), 1);
@@ -109,6 +122,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(8)
     void testScenario8_OverlappingOutOfBoundsRight() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 8), 1);
@@ -122,6 +136,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(9)
     void testScenario9_OverlappingOutOfBoundsTop() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(9, 3), 1);
@@ -135,6 +150,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(10)
     void testScenario10_OverlappingDiagonallyAdjacent() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 3), 1);
@@ -148,6 +164,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(11)
     void testScenario11_OverlappingSameRowAdjacent() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 3), 1);
@@ -161,6 +178,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(12)
     void testScenario12_OverlappingSameColumnAdjacent() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(3, 4), 1);
@@ -174,6 +192,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(13)
     void testScenario13_OppositeCorners() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(0, 0), 1);
@@ -187,6 +206,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(14)
     void testScenario14_ThreeInOneCorner() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(10, 9), 1);
@@ -203,6 +223,7 @@ public class BDDScenarioTests {
     // Degenerate Grid Scenarios (15-25)
     
     @Test
+    @Order(15)
     void testScenario15_1x21Grid() {
         Grid grid = new Grid(1, 21);
         grid.setCellValue(new Position(0, 9), 1);
@@ -215,6 +236,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(16)
     void testScenario16_21x1Grid() {
         Grid grid = new Grid(21, 1);
         grid.setCellValue(new Position(10, 0), 1);
@@ -227,6 +249,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(17)
     void testScenario17_1x1Grid() {
         Grid grid = new Grid(1, 1);
         grid.setCellValue(new Position(0, 0), 1);
@@ -239,6 +262,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(18)
     void testScenario18_20x20GridThresholdZero() {
         Grid grid = new Grid(20, 20);
         grid.setCellValue(new Position(0, 0), 1);
@@ -251,6 +275,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(19)
     void testScenario19_2x2Grid() {
         Grid grid = new Grid(2, 2);
         grid.setCellValue(new Position(0, 1), 1);
@@ -263,6 +288,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(20)
     void testScenario20_21x3GridNGreaterThanW() {
         Grid grid = new Grid(21, 3);
         grid.setCellValue(new Position(10, 2), 1);
@@ -275,6 +301,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(21)
     void testScenario21_4x15GridNGreaterThanH() {
         Grid grid = new Grid(4, 15);
         grid.setCellValue(new Position(2, 9), 1);
@@ -287,6 +314,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(22)
     void testScenario22_2x2GridNGreaterThanBoth() {
         Grid grid = new Grid(2, 2);
         grid.setCellValue(new Position(0, 1), 1);
@@ -299,6 +327,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(23)
     void testScenario23_2x2GridNMuchGreater() {
         Grid grid = new Grid(2, 2);
         grid.setCellValue(new Position(0, 1), 1);
@@ -311,6 +340,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(24)
     void testScenario24_11x11GridCornerLargeN() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(0, 0), 1);
@@ -323,6 +353,7 @@ public class BDDScenarioTests {
     }
     
     @Test
+    @Order(25)
     void testScenario25_11x11GridCenterLargeN() {
         Grid grid = new Grid(11, 11);
         grid.setCellValue(new Position(5, 5), 1);
@@ -337,6 +368,7 @@ public class BDDScenarioTests {
     // No Positive Cells Scenario (26)
     
     @Test
+    @Order(26)
     void testScenario26_NoPositiveCells() {
         Grid grid = new Grid(10, 10);
         // Grid is created with all zeros by default (no positive cells)
