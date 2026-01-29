@@ -29,16 +29,28 @@ Count unique grid cells within Manhattan distance neighborhoods of positive-valu
 - **Run Tests**: `cd python && python -m pytest -v`
 
 ### Java
-- **Status**: 🔄 Comparing with Python implementation
-- **Implementation Notes**: [java/IMPLEMENTATION_NOTES.md](java/IMPLEMENTATION_NOTES.md) *(coming soon)*
-- **Original Implementation**: See parent directory for interview version
+- **Status**: ✅ Complete
+- **Implementation Notes**: [java/IMPLEMENTATION_NOTES.md](java/IMPLEMENTATION_NOTES.md)
+- **Testing**: JUnit + jqwik (property-based testing)
+- **Run Tests**: `cd java && ./gradlew test`
+
+### C
+- **Status**: ✅ Complete
+- **Implementation Notes**: [c/IMPLEMENTATION_NOTES.md](c/IMPLEMENTATION_NOTES.md)
+- **Testing**: Custom test framework
+- **Run Tests**: `cd c && make test`
+
+### Go
+- **Status**: ✅ Complete (34 tests passing)
+- **Implementation Notes**: [go/IMPLEMENTATION_NOTES.md](go/IMPLEMENTATION_NOTES.md)
+- **Testing**: Go testing + rapid (property-based testing)
+- **Run Tests**: `cd go && go test -v`
 
 ### Future Languages
-- Go
 - TypeScript
 - Rust
-- C
 - C++
+- JavaScript
 - Others as desired
 
 ## Implementation Approach
