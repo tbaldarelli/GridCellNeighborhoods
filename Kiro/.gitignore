@@ -38,6 +38,11 @@ ENV/
 *.swp
 *.swo
 
+# Go
+*.out
+coverage.html
+coverage
+
 # OS
 .DS_Store
 Thumbs.db

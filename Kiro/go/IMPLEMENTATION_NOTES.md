@@ -158,3 +158,21 @@ All 26 BDD scenarios produce **identical results** across Python, Java, C, and G
 - **Go**: ~8 seconds (all tests)
 
 Go's performance is good, with most of the time spent on the N=100000 test case (which is intentionally extreme).
+
+## Some my notes when comparing to my Java implementation, and lessons learned.  Everything above automatically generated, for most part.
+
+ - I can confirm that test results from Go give same results as ../log/GridCellNeighborhoodsWithinDistance_EndPointLogic2E.log.  As we might expect, C is much quicker, but, once we fixed a few optimization issues so it matched the spec better (and incidentally, the AI Java version), Go was faster than AI Java version (or even my "by hand" version).
+   - Go version (via `go test -run TestScenario`): 2.13 seconds, one time was 1.7142845 seconds
+   - C  version (via dedicated `.\test_bdd_scenarios.exe`): 0.0514632 seconds
+   - AI Java version (via `mvn test`): 3.3999541 seconds
+   - By hand Java version (via `java -cp . GridCellNeighborhoodsWithinDistance`): 0.1400828 seconds
+
+ ### Implementation Comparison
+
+ - See above, mostly same logic as normal implementation, but with Go variants
+ - When I compared `mvn test -Dtest=BDDScenarioTests` to `go test -v -run TestScenario`, Java was much faster.  So I asked AI, and at first it thought it was the compiler overhead, but then we figured out it was a missing optimization that we applied in Java but not in Go.  So, in general, if we have 2 programs doing much the same thing, one in Java and one in Go, Go should be faster, even with the Go compile overhead.  If it is not, then there is a good chance we did something to optimize it in Java that we also need to do in the Go variant.
+   - Go was missing optimizations 1 (Early Termination) and 2 (Boundary Pre-filtering), while Java and Python had both of those already.  This made Scenario 23 take over 6 seconds, while it was near instant in Java.
+   - Incidentally, C doesn't have optimization 2 (Boundary Pre-filtering) either, but it was still much faster.  We assume it is because of the C compiler optimizing things, which it can do with the simpler structures and data types.  With Go, we use a map, which is heavier.  Also, C's simple integer comparison and struct copies are much lighter than Go's map hash calculations and memoroy allocations.
+ - No libraries, per se, in Go.  The general pattern is to always compile from source.  So, when we do the CD step later, we will tag the version, but we won't really make an artifact for it.  For Go, users could `import "github.com/user/repo"` and GO will fetch the source automatically for the executable creation.  In other words, there is no separate "install" step like `pip install` or `npm install`.
+     - When we get to the CD setup (artifact publication), and we want dedicated executable artifacts for different architectures, we would create artifacts per architecture, such as `GOOS=linux GOARCH=amd64 go build -o gridneighborhoods-linux-amd64` for a 64 bit linux machine (normal CD type behavior, with GitHub actions, or something similar).
+ - For "Go", unlike many other languages, "function" and "method" have special meanings.  For functions, we do not have a receiver, and for methods we do have a receiver.  If you don't need to use the receiver inside the method, then get rid of the receiver, thus making it a function.  This is not a perfect analogy, but I sort of think of the "receiver" as the object the method is defined for and works on, if we were to compare it to Java.  This is not strictly speaking totally accurate, but it helps me keep ot sort of straight in my head.  Point being that the method is in some way acting on the "receiver".

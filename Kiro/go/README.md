@@ -31,11 +31,14 @@ go/
 # Run all tests
 go test -v
 
-# Run specific test file
-go test -v -run TestBDDScenarios
+# Run only BDD scenario tests (all 26 scenarios)
+go test -v -run TestScenario
 
-# Run property-based tests
-go test -v -run TestProperties
+# Run only property-based tests (all 8 properties)
+go test -v -run TestProperty
+
+# Run a specific scenario (e.g., scenario 1)
+go test -v -run TestScenario1
 
 # Run with coverage
 go test -v -cover
