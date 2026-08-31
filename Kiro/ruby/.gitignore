@@ -1,0 +1,9 @@
+# Ruby / bundler artifacts
+/.bundle
+/vendor/bundle
+*.gem
+
+# The root .gitignore has an unanchored `lib/` (a Python packaging rule) that
+# also matches this Ruby source directory. Re-include it here.
+!lib/
+!lib/**
