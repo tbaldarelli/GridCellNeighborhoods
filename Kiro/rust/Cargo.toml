@@ -1,0 +1,12 @@
+[package]
+name = "grid_neighborhoods"
+version = "0.1.0"
+edition = "2021"
+description = "Grid Cell Neighborhoods - Rust implementation (Manhattan distance neighborhood counting)"
+
+[lib]
+name = "grid_neighborhoods"
+path = "src/lib.rs"
+
+[dev-dependencies]
+proptest = "1"
