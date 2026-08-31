@@ -374,3 +374,175 @@ func TestProperty12DegenerateGridHandling(t *testing.T) {
 		}
 	})
 }
+
+// Property 5: Complete Neighborhood Enumeration
+// Feature: grid-neighborhoods, Property 5: Complete Neighborhood Enumeration
+// Validates: Requirements 3.2
+func TestProperty5CompleteNeighborhoodEnumeration(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		n := rapid.IntRange(1, 10).Draw(t, "distanceThreshold")
+
+		// Grid large enough that the full diamond fits with the center away from edges.
+		height := 2*n + 3
+		width := 2*n + 3
+		center := Position{Row: n + 1, Column: n + 1}
+		grid, _ := NewGrid(height, width, []Position{center})
+
+		calculator := NewNeighborhoodCalculator()
+		neighborhood := calculator.EnumerateNeighborhood(grid, center, n)
+
+		// Diamond size formula: (N+1)^2 + N^2
+		expected := (n+1)*(n+1) + n*n
+		if len(neighborhood) != expected {
+			t.Fatalf("Expected complete diamond of size %d, got %d", expected, len(neighborhood))
+		}
+
+		// Verify every cell within N Manhattan steps is present.
+		for deltaRow := -n; deltaRow <= n; deltaRow++ {
+			remaining := n - Abs(deltaRow)
+			for deltaCol := -remaining; deltaCol <= remaining; deltaCol++ {
+				pos := Position{Row: center.Row + deltaRow, Column: center.Column + deltaCol}
+				if !neighborhood[pos] {
+					t.Fatalf("Cell %v should be in the complete diamond", pos)
+				}
+			}
+		}
+	})
+}
+
+// Property 6: Boundary Constraint Enforcement
+// Feature: grid-neighborhoods, Property 6: Boundary Constraint Enforcement
+// Validates: Requirements 3.3, 6.1, 6.2, 6.3
+func TestProperty6BoundaryConstraintEnforcement(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		height := rapid.IntRange(1, 20).Draw(t, "height")
+		width := rapid.IntRange(1, 20).Draw(t, "width")
+		n := rapid.IntRange(0, 20).Draw(t, "distanceThreshold")
+
+		// Place the positive cell in a corner so the diamond routinely spills over the edges.
+		center := Position{Row: 0, Column: 0}
+		grid, _ := NewGrid(height, width, []Position{center})
+
+		calculator := NewNeighborhoodCalculator()
+		boundaryHandler := NewBoundaryHandler()
+		neighborhood := calculator.EnumerateNeighborhood(grid, center, n)
+
+		// Every enumerated cell must be within bounds - no wraparound.
+		for cell := range neighborhood {
+			if !boundaryHandler.IsWithinBounds(cell, grid) {
+				t.Fatalf("Cell %v should be within bounds", cell)
+			}
+			if cell.Row < 0 || cell.Row >= height || cell.Column < 0 || cell.Column >= width {
+				t.Fatalf("Cell %v is outside the %dx%d grid", cell, height, width)
+			}
+		}
+	})
+}
+
+// Property 8: Non-Overlapping Additivity
+// Feature: grid-neighborhoods, Property 8: Non-Overlapping Additivity
+// Validates: Requirements 4.1, 4.3
+func TestProperty8NonOverlappingAdditivity(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		n := rapid.IntRange(1, 8).Draw(t, "distanceThreshold")
+
+		// Separate the two centers far enough that their diamonds cannot touch.
+		minSeparation := 2*n + 1
+		height := minSeparation + 2*n + 2
+		width := minSeparation + 2*n + 2
+
+		p1 := Position{Row: n, Column: n}
+		p2 := Position{Row: n + minSeparation, Column: n + minSeparation}
+		grid, _ := NewGrid(height, width, []Position{p1, p2})
+
+		calculator := NewNeighborhoodCalculator()
+		nb1 := calculator.EnumerateNeighborhood(grid, p1, n)
+		nb2 := calculator.EnumerateNeighborhood(grid, p2, n)
+
+		// Confirm the neighborhoods do not overlap.
+		for cell := range nb1 {
+			if nb2[cell] {
+				t.Fatalf("Neighborhoods should not overlap, but %v is in both", cell)
+			}
+		}
+
+		total, _ := calculator.CountNeighborhoodCells(grid, n)
+		if total != len(nb1)+len(nb2) {
+			t.Fatalf("Non-overlapping total should be %d, got %d", len(nb1)+len(nb2), total)
+		}
+	})
+}
+
+// Property 9: Overlapping Union Behavior
+// Feature: grid-neighborhoods, Property 9: Overlapping Union Behavior
+// Validates: Requirements 5.2, 5.3
+func TestProperty9OverlappingUnionBehavior(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		n := rapid.IntRange(2, 8).Draw(t, "distanceThreshold")
+
+		height := 2*n + 10
+		width := 2*n + 10
+		p1 := Position{Row: n + 1, Column: n + 1}
+		p2 := Position{Row: n + 2, Column: n + 2} // close enough to overlap
+		grid, _ := NewGrid(height, width, []Position{p1, p2})
+
+		calculator := NewNeighborhoodCalculator()
+		nb1 := calculator.EnumerateNeighborhood(grid, p1, n)
+		nb2 := calculator.EnumerateNeighborhood(grid, p2, n)
+
+		// Confirm the neighborhoods overlap.
+		overlap := 0
+		for cell := range nb1 {
+			if nb2[cell] {
+				overlap++
+			}
+		}
+		if overlap == 0 {
+			t.Fatal("Neighborhoods should overlap for this configuration")
+		}
+
+		total, _ := calculator.CountNeighborhoodCells(grid, n)
+		if total >= len(nb1)+len(nb2) {
+			t.Fatalf("Overlapping union %d should be less than sum of individuals %d", total, len(nb1)+len(nb2))
+		}
+	})
+}
+
+// Property 13: Cross-Language Result Consistency
+// Feature: grid-neighborhoods, Property 13: Cross-Language Result Consistency
+// Validates: Requirements 9.1, 9.3, 9.4
+//
+// Verifies determinism: the same input always yields the same count. True
+// cross-language validation is done by comparing BDD scenario output.
+func TestProperty13CrossLanguageResultConsistency(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		height := rapid.IntRange(1, 30).Draw(t, "height")
+		width := rapid.IntRange(1, 30).Draw(t, "width")
+		n := rapid.IntRange(0, 15).Draw(t, "distanceThreshold")
+
+		numPositions := rapid.IntRange(1, 5).Draw(t, "numPositions")
+		positions := make([]Position, 0, numPositions)
+		posSet := make(map[Position]bool)
+		for i := 0; i < numPositions; i++ {
+			row := rapid.IntRange(0, height-1).Draw(t, "pos_row")
+			col := rapid.IntRange(0, width-1).Draw(t, "pos_col")
+			pos := Position{Row: row, Column: col}
+			if !posSet[pos] {
+				positions = append(positions, pos)
+				posSet[pos] = true
+			}
+		}
+		if len(positions) == 0 {
+			t.Skip("No valid positions generated")
+		}
+
+		grid, _ := NewGrid(height, width, positions)
+		calculator := NewNeighborhoodCalculator()
+
+		count1, _ := calculator.CountNeighborhoodCells(grid, n)
+		count2, _ := calculator.CountNeighborhoodCells(grid, n)
+		if count1 != count2 {
+			t.Fatalf("Result should be deterministic: %d != %d", count1, count2)
+		}
+	})
+}

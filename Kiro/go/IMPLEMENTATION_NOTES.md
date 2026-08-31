@@ -41,6 +41,10 @@ Go uses explicit error returns rather than exceptions:
 - Using `rapid` library (pgregory.net/rapid)
 - Generators for valid grids, positions, and distance thresholds
 - Minimum 100 iterations per property
+- All 13 correctness properties are covered. (An earlier version of this Go port
+  had only 7 of the 13; properties 5, 6, 8, 9, and 13 were added later to reach
+  full parity with the C, Java, Rust, and C# suites. This was a coverage gap in
+  the original port, not a Go or `rapid` limitation.)
 
 ## Go-Specific Patterns
 
